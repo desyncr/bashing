@@ -13,6 +13,7 @@ BUILD_CLI="yes"
 BUILD_HELP="yes"
 COMPACT="no"
 OUTPUT_FILE=""
+MAIN_FUNCTION=""
 
 # -------------------------------------------------------------------
 # Parse Command Line
@@ -25,6 +26,7 @@ while [ $# -gt 0 ]; do
         "--no-lib") BUILD_LIBRARY="no";;
         "--no-cli") BUILD_CLI="no";;
         "--no-header") BUILD_HEADER="no";;
+        "--main-function") shift; MAIN_FUNCTION="$1";;
         --*)
             error "Invalid command line argument: $arg"
             exit 1

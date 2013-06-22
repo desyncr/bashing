@@ -201,14 +201,27 @@ function generateCli() {
     nl
     for path in $cliScripts; do includeCliFn "$path"; done
     sep
+
     comment "Main Function"
     nl
-    buildCliHeader
-    for path in $cliScripts; do buildCliHandler "$path"; done
-    if [[ "$BUILD_HELP" == "yes" ]]; then buildHelpFunction "$cliScripts"; fi
-    buildVersionFunction
-    buildCliFooter
-    print_out "__run \"\$@\""
+    if [ ! -z $MAIN_FUNCTION ]; then
+        case "${cliScripts[@]}" in *"$MAIN_FUNCTION"*)
+            debug "Using custom main function: $MAIN_FUNCTION"
+            print_out "cli_${MAIN_FUNCTION} \"\$@\""
+            ;;
+        *)
+            fatal "Main function doesn\'t exists: $MAIN_FUNCTION"
+            ;;
+        esac
+    else
+        buildCliHeader
+        for path in $cliScripts; do buildCliHandler "$path"; done
+        if [[ "$BUILD_HELP" == "yes" ]]; then buildHelpFunction "$cliScripts"; fi
+        buildVersionFunction
+        buildCliFooter
+        print_out "__run \"\$@\""
+    fi
+
     print_out 'export __STATUS="$?"'
     sep
     cd "$CWD";
